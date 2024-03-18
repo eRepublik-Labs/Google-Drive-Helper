@@ -1,3 +1,4 @@
+[![Publish releases](https://github.com/eRepublik-Labs/Google-Drive-Helper/actions/workflows/dotnet.yml/badge.svg)](https://github.com/eRepublik-Labs/Google-Drive-Helper/actions/workflows/dotnet.yml)
 # Google Drive Helper
 
 Google Drive Helper is a C# console application that allows you to interact with Google Drive using the Google Drive
