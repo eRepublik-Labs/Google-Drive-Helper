@@ -1,0 +1,93 @@
+name: Publish releases
+
+env:
+ BINARY_NAME: Google Drive Helper
+ SHORT_NAME: gdrive-helper
+
+on:
+  push:
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set env
+      run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF:11})" >> $GITHUB_ENV
+    - name: Set workspace env
+      run: echo "GITHUB_WORKSPACE=$(echo ${GITHUB_WORKSPACE})" >> $GITHUB_ENV
+    - name: .NET project version updater
+      uses: vers-one/dotnet-project-version-updater@v1.2
+      with:
+        file: 'Google Drive Helper.csproj'
+        version: ${{ env.RELEASE_VERSION }}
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Publish osx-x64
+      run: dotnet publish -c Release -r osx-x64 --self-contained true
+    - name: Publish osx-arm64
+      run: dotnet publish -c Release -r osx-arm64 --self-contained true
+    - name: Publish win-x64
+      run: dotnet publish -c Release -r win-x64 --self-contained true
+    - name: Publish linux-x64
+      run: dotnet publish -c Release -r linux-x64 --self-contained true
+    - name: Zip binaries
+      run: |
+        zip --junk-paths $SHORT_NAME-osx-x64.zip ${GITHUB_WORKSPACE}/bin/Release/net8.0/osx-x64/publish/$BINARY_NAME
+        zip --junk-paths $SHORT_NAME-osx-arm64.zip ${GITHUB_WORKSPACE}/bin/Release/net8.0/osx-arm64/publish/$BINARY_NAME
+        zip --junk-paths $SHORT_NAME-win-x64.zip ${GITHUB_WORKSPACE}/bin/Release/net8.0/win-x64/publish/$BINARY_NAME.exe
+        zip --junk-paths $SHORT_NAME-linux-x64.zip ${GITHUB_WORKSPACE}/bin/Release/net8.0/linux-x64/publish/$BINARY_NAME
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        draft: false
+        prerelease: false
+    - name: Upload osx-x64 assets
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./badger-osx-x64.zip
+        asset_name: badger-osx-x64.zip
+        asset_content_type: application/zip
+
+    - name: Upload osx-arm64 assets
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./$SHORT_NAME-osx-arm64.zip
+        asset_name: $SHORT_NAME-osx-arm64.zip
+        asset_content_type: application/zip
+
+    - name: Upload win-x64 assets
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./$SHORT_NAME-win-x64.zip
+        asset_name: $SHORT_NAME-win-x64.zip
+        asset_content_type: application/zip
+
+    - name: Upload linux-x64 assets
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./$SHORT_NAME-linux-x64.zip
+        asset_name: $SHORT_NAME-linux-x64.zip
+        asset_content_type: application/zip
