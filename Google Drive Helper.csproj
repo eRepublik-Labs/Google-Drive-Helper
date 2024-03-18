@@ -7,9 +7,32 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Title>Google Drive Helper</Title>
+        <Description>Google Drive Helper is a C# console application that allows you to interact with Google Drive using the Google Drive API. You can upload files to Google Drive and list files in a specific folder.</Description>
+        <Copyright>Alexandru Geana</Copyright>
         <Authors>Alexandru Geana (alex.geana@erepubliklabs.com)</Authors>
+        <PackageProjectUrl>https://github.com/eRepublik-Labs/Google-Drive-Helper</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/eRepublik-Labs/Google-Drive-Helper</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
         <Description>Google Drive Helper</Description>
+        <PackageVersion>2024.3.0</PackageVersion>
+        <PublishSingleFile>true</PublishSingleFile>
+        <SelfContained>true</SelfContained>
+        <DebugType>embedded</DebugType>
+        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+        <PublishTrimmed>true</PublishTrimmed>
+        <TrimMode>partial</TrimMode>
+        <UseAppHost>true</UseAppHost>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="" />
+        <BuiltProjectOutputGroupOutput Include="$(ProjectRuntimeConfigFilePath)">
+            <FinalOutputPath>$(ProjectRuntimeConfigFilePath)</FinalOutputPath>
+        </BuiltProjectOutputGroupOutput>
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="CommandLineParser" Version="2.9.1"/>
