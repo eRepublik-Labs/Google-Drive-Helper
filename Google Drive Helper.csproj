@@ -26,6 +26,8 @@
         <PublishTrimmed>true</PublishTrimmed>
         <TrimMode>partial</TrimMode>
         <UseAppHost>true</UseAppHost>
+        <AssemblyName>gdrive-helper</AssemblyName>
+        <TargetName>gdrive-helper</TargetName>
     </PropertyGroup>
 
     <ItemGroup>
