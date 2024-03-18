@@ -12,14 +12,16 @@ using File = Google.Apis.Drive.v3.Data.File;
 
 const string applicationName = "Google Drive Helper";
 
-var username = Environment.GetEnvironmentVariable("GOOGLE_DRIVE_USERNAME") ?? throw new InvalidOperationException();
+var username = Environment.GetEnvironmentVariable("GOOGLE_DRIVE_USERNAME") ??
+               throw new InvalidOperationException("Missing GOOGLE_DRIVE_USERNAME environment variable.");
 var accessToken = Environment.GetEnvironmentVariable("GOOGLE_DRIVE_ACCESS_TOKEN") ??
-                  throw new InvalidOperationException();
+                  throw new InvalidOperationException("Missing GOOGLE_DRIVE_ACCESS_TOKEN environment variable.");
 var refreshToken = Environment.GetEnvironmentVariable("GOOGLE_DRIVE_REFRESH_TOKEN") ??
-                   throw new InvalidOperationException();
-var clientId = Environment.GetEnvironmentVariable("GOOGLE_DRIVE_CLIENT_ID") ?? throw new InvalidOperationException();
+                   throw new InvalidOperationException("Missing GOOGLE_DRIVE_REFRESH_TOKEN environment variable.");
+var clientId = Environment.GetEnvironmentVariable("GOOGLE_DRIVE_CLIENT_ID") ??
+               throw new InvalidOperationException("Missing GOOGLE_DRIVE_CLIENT_ID environment variable.");
 var clientSecret = Environment.GetEnvironmentVariable("GOOGLE_DRIVE_CLIENT_SECRET") ??
-                   throw new InvalidOperationException();
+                   throw new InvalidOperationException("Missing GOOGLE_DRIVE_CLIENT_SECRET environment variable.");
 
 Parser.Default.ParseArguments<UploadOptions, ListOptions>(args)
     .WithParsed(o =>
