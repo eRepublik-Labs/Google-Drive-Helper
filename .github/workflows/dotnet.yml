@@ -1,8 +1,5 @@
 name: Publish releases
 
-env:
- SHORT_NAME: gdrive-helper
-
 on:
   push:
     tags:
@@ -38,10 +35,10 @@ jobs:
       run: dotnet publish -c Release -r linux-x64 --self-contained true
     - name: Zip binaries
       run: |
-        zip --junk-paths $SHORT_NAME-osx-x64.zip ${GITHUB_WORKSPACE}/bin/Release/net8.0/osx-x64/publish/$SHORT_NAME
-        zip --junk-paths $SHORT_NAME-osx-arm64.zip ${GITHUB_WORKSPACE}/bin/Release/net8.0/osx-arm64/publish/$SHORT_NAME
-        zip --junk-paths $SHORT_NAME-win-x64.zip ${GITHUB_WORKSPACE}/bin/Release/net8.0/win-x64/publish/$SHORT_NAME.exe
-        zip --junk-paths $SHORT_NAME-linux-x64.zip ${GITHUB_WORKSPACE}/bin/Release/net8.0/linux-x64/publish/$SHORT_NAME
+        zip --junk-paths gdrive-helper-osx-x64.zip ${GITHUB_WORKSPACE}/bin/Release/net8.0/osx-x64/publish/gdrive-helper
+        zip --junk-paths gdrive-helper-osx-arm64.zip ${GITHUB_WORKSPACE}/bin/Release/net8.0/osx-arm64/publish/gdrive-helper
+        zip --junk-paths gdrive-helper-win-x64.zip ${GITHUB_WORKSPACE}/bin/Release/net8.0/win-x64/publish/gdrive-helper.exe
+        zip --junk-paths gdrive-helper-linux-x64.zip ${GITHUB_WORKSPACE}/bin/Release/net8.0/linux-x64/publish/gdrive-helper
     - name: Create release
       id: create_release
       uses: actions/create-release@v1
@@ -57,8 +54,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./$SHORT_NAME-osx-x64.zip
-        asset_name: $SHORT_NAME-osx-x64.zip
+        asset_path: ./gdrive-helper-osx-x64.zip
+        asset_name: gdrive-helper-osx-x64.zip
         asset_content_type: application/zip
 
     - name: Upload osx-arm64 assets
@@ -67,8 +64,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./$SHORT_NAME-osx-arm64.zip
-        asset_name: $SHORT_NAME-osx-arm64.zip
+        asset_path: ./gdrive-helper-osx-arm64.zip
+        asset_name: gdrive-helper-osx-arm64.zip
         asset_content_type: application/zip
 
     - name: Upload win-x64 assets
@@ -77,8 +74,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./$SHORT_NAME-win-x64.zip
-        asset_name: $SHORT_NAME-win-x64.zip
+        asset_path: ./gdrive-helper-win-x64.zip
+        asset_name: gdrive-helper-win-x64.zip
         asset_content_type: application/zip
 
     - name: Upload linux-x64 assets
@@ -87,6 +84,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./$SHORT_NAME-linux-x64.zip
-        asset_name: $SHORT_NAME-linux-x64.zip
+        asset_path: ./gdrive-helper-linux-x64.zip
+        asset_name: gdrive-helper-linux-x64.zip
         asset_content_type: application/zip
