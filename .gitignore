@@ -5,6 +5,7 @@ riderModule.iml
 # Common IntelliJ Platform excludes
 
 .idea/
+.history/
 
 # User specific
 **/.idea/**/workspace.xml
