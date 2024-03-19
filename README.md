@@ -1,4 +1,5 @@
 [![Publish releases](https://github.com/eRepublik-Labs/Google-Drive-Helper/actions/workflows/dotnet.yml/badge.svg)](https://github.com/eRepublik-Labs/Google-Drive-Helper/actions/workflows/dotnet.yml)
+
 # Google Drive Helper
 
 Google Drive Helper is a C# console application that allows you to interact with Google Drive using the Google Drive
@@ -71,6 +72,25 @@ Example:
 
 ```
 dotnet run -- list -f "1234567890abcdefg" -p 20
+```
+
+### Exporting a file
+
+To export a file from Google Drive, use the `export` command followed by the required options:
+
+```
+dotnet run -- export -i <file_id> -m <mime_type>
+```
+
+Options:
+
+- `-i`, `--fileId`: ID of the file you want to export (required)
+- `-m`, `--mimeType`: MIME type of the file (required)
+
+Example:
+
+```
+dotnet run -- export -i "1234567890abcdefg" -m "application/pdf"
 ```
 
 ## Dependencies

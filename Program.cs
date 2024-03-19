@@ -23,7 +23,7 @@ var clientId = Environment.GetEnvironmentVariable("GOOGLE_DRIVE_CLIENT_ID") ??
 var clientSecret = Environment.GetEnvironmentVariable("GOOGLE_DRIVE_CLIENT_SECRET") ??
                    throw new InvalidOperationException("Missing GOOGLE_DRIVE_CLIENT_SECRET environment variable.");
 
-Parser.Default.ParseArguments<UploadOptions, ListOptions>(args)
+Parser.Default.ParseArguments<UploadOptions, ListOptions, ExportOptions>(args)
     .WithParsed(o =>
     {
         switch (o)
@@ -69,6 +69,21 @@ Parser.Default.ParseArguments<UploadOptions, ListOptions>(args)
 
                 break;
             }
+
+            case ExportOptions exportOptions:
+            {
+                if (string.IsNullOrEmpty(exportOptions.Mime))
+                {
+                    exportOptions.Mime = MimeTypesMap.GetMimeType(exportOptions.Mime);
+
+                    Console.WriteLine(
+                        $"\u26a0 Mime type not provided. Using file extension to determine mime type.  [{exportOptions.Mime}]");
+                }
+
+                ExportFile(exportOptions.Id, exportOptions.Mime);
+
+                break;
+            }
         }
     });
 
@@ -99,6 +114,34 @@ DriveService GetService()
     });
 
     return service;
+}
+
+string GetExportFilename(string name, string mime)
+{
+    var extension = MimeTypesMap.GetExtension(mime);
+    return $"{name}.{extension}";
+}
+
+void ExportFile(string fileId, string mime)
+{
+    var service = GetService();
+    var request = service.Files.Export(fileId, mime);
+    var fileName = service.Files.Get(fileId).Execute().Name;
+
+    Console.WriteLine($"Filename: {fileName}");
+
+    var output = GetExportFilename(fileName, mime);
+
+    var stream = new FileStream(output, FileMode.Create, FileAccess.Write);
+
+    request.MediaDownloader.ProgressChanged += progress =>
+    {
+        Console.Write($"\r\u231b  Downloading... {progress.Status} {progress.BytesDownloaded} bytes");
+    };
+
+    request.Download(stream);
+
+    Console.WriteLine($"\n\u2705  {output} successfully exported.");
 }
 
 File? GetExistingFile(string fileName, string folder)
@@ -210,4 +253,14 @@ public class ListOptions
 
     [Option('p', "pageSize", Default = 10, Required = false, HelpText = "Page size.")]
     public int PageSize { get; set; }
+}
+
+[Verb("export", HelpText = "Export a file from Google Drive.")]
+public class ExportOptions
+{
+    [Option('i', "id", Required = true, HelpText = "File id.")]
+    public string Id { get; set; }
+
+    [Option('m', "mime", Required = false, HelpText = "Mime type of the file.")]
+    public string Mime { get; set; }
 }
